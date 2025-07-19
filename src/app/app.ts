@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input, input, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from "./header/header";
 import { UserInput } from "./user-input/user-input";
-import { InvestmentInput } from './models/investmentInput';
+import { InvestmentInput, Results } from './models/investmentInput';
+import { InvestmentResults } from "./investment-results/investment-results";
 @Component({
   selector: 'app-root',
-  imports: [Header, UserInput],
+  imports: [Header, UserInput, InvestmentResults],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected title = 'investment-calculator-practce-app';
-
+  //resultsData = input<Results[]>([])
+  resultsData = signal<Results[]>([]);
  calculateInvestmentResults(data:InvestmentInput) {
   const {initialInvestment,annualInvestment,duration,expectedReturn} = data;
-  const annualData = [];
+  const annualData : Results[] = [];
   let investmentValue = initialInvestment;
 
   for (let i = 0; i < duration; i++) {
@@ -32,6 +34,6 @@ export class App {
       totalAmountInvested: initialInvestment + annualInvestment * year,
     });
   }
-  return console.log(annualData);
+this.resultsData.set(annualData) ;
 }
 }

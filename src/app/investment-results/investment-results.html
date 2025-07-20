@@ -1,26 +1,38 @@
-@if(!results() || results()?.length === 0)
-{
-<p class="message">Please enter some values to calculate</p>
-}
+<!-- src/app/investment-results/investment-results.html -->
 
-<table>
-    <thead>
-        <tr>
+<!-- First @if: Check if the signal's value is truthy (i.e., not undefined/null) -->
+@if(results(); as calculatedResults) {
+  <!-- Second @if: Now that 'calculatedResults' is guaranteed to be an array (not undefined),
+       we can safely check its length. -->
+  @if(calculatedResults.length > 0) {
+      <table>
+        <thead>
+          <tr>
             <th>Year</th>
             <th>Investment Value</th>
             <th>Interest (Year)</th>
             <th>Total Interest</th>
-            <th>Investment Capitol</th>
-        </tr>
-    </thead>
-    <tbody>
-            @for(result of results()!; track result.year) { <tr>
-            <td>{{ result.year }}</td>
-            <td>{{ result.valueEndOfYear | currency:'USD':'symbol':'1.2-2' }}</td>
-            <td>{{ result.interest | currency:'USD':'symbol':'1.2-2' }}</td>
-            <td>{{ result.totalInterest | currency:'USD':'symbol':'1.2-2' }}</td>
-            <td>{{ result.totalAmountInvested | currency:'USD':'symbol':'1.2-2' }}</td> 
+            <th>Invested Capital</th>
           </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+          <!-- Iterate directly over 'calculatedResults' which is now type-narrowed to Results[] -->
+          @for(result of calculatedResults; track result.year) {
+            <tr>
+              <td>{{ result.year }}</td>
+              <td>{{ result.valueEndOfYear | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td>{{ result.interest | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td>{{ result.totalInterest | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td>{{ result.totalAmountInvested | currency:'USD':'symbol':'1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+  } @else {
+    <!-- This block shows if results() is an empty array [] -->
+    <p class="message">Please enter some values to calculate</p>
+  }
+} @else {
+  <!-- This block shows if results() is undefined (initial state) -->
+  <p class="message">Please enter some values to calculate</p>
+}
